@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, FlatList, Platform, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, FlatList, Platform, Animated, Easing, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useBooking } from '../context/BookingContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -83,9 +83,25 @@ export default function BookingScreen() {
     </View>
   );
 
+  // Web-only styles for centering and width (React Native compatible)
+  const webScrollContent = Platform.OS === 'web' ? {
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    minHeight: 600,
+  } : undefined;
+  const webContent = Platform.OS === 'web' ? {
+    width: 400,
+    maxWidth: 400,
+    marginTop: 40,
+    marginBottom: 40,
+    borderRadius: 16,
+    backgroundColor: 'rgba(44,44,46,0.98)',
+    // boxShadow is not supported in RN, so skip it
+  } : undefined;
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={Platform.OS === 'web' ? styles.webScrollContent : undefined}>
-      <Animated.View style={[styles.content, Platform.OS === 'web' ? styles.webContent : undefined, { opacity: fadeAnim }]}>
+    <ScrollView style={styles.container} contentContainerStyle={webScrollContent}>
+      <Animated.View style={[styles.content, webContent, { opacity: fadeAnim }]}>
         <Text style={styles.title}>Make a Booking</Text>
 
         {bookings.length > 0 && (
@@ -200,7 +216,11 @@ export default function BookingScreen() {
         >
           {loading ? (
             <View style={styles.loader}>
-              <div className="loader-spinner" />
+              {Platform.OS === 'web' ? (
+                <div className="loader-spinner" />
+              ) : (
+                <ActivityIndicator color="#fff" />
+              )}
             </View>
           ) : (
             <Text style={styles.buttonText}>Confirm Booking</Text>
@@ -216,22 +236,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1C1C1E',
   },
-  webScrollContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-  },
   content: {
     padding: 20,
-  },
-  webContent: {
-    width: 400,
-    maxWidth: '90vw',
-    marginTop: 40,
-    marginBottom: 40,
-    borderRadius: 16,
-    backgroundColor: 'rgba(44,44,46,0.98)',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
   },
   title: {
     fontFamily: 'Poppins-Bold',
