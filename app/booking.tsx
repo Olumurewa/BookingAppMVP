@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, FlatList, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, FlatList, Platform, Animated, Easing } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useBooking } from '../context/BookingContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -17,23 +17,37 @@ export default function BookingScreen() {
   const [error, setError] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  React.useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const handleBooking = () => {
     if (!name.trim()) {
       setError('Please enter your name');
       return;
     }
-
-    const booking = {
-      name,
-      date: formatDate(date),
-      time: formatTime(time)
-    };
-    addBooking(booking);
-    router.push({
-      pathname: '/confirmation',
-      params: booking
-    });
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      const booking = {
+        name,
+        date: formatDate(date),
+        time: formatTime(time)
+      };
+      addBooking(booking);
+      router.push({
+        pathname: '/confirmation',
+        params: booking
+      });
+    }, 1200);
   };
 
   const onDateChange = (event: any, selectedDate?: Date) => {
@@ -70,8 +84,8 @@ export default function BookingScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={Platform.OS === 'web' ? styles.webScrollContent : undefined}>
+      <Animated.View style={[styles.content, Platform.OS === 'web' ? styles.webContent : undefined, { opacity: fadeAnim }]}>
         <Text style={styles.title}>Make a Booking</Text>
 
         {bookings.length > 0 && (
@@ -182,10 +196,17 @@ export default function BookingScreen() {
         <TouchableOpacity 
           style={styles.button}
           onPress={handleBooking}
+          disabled={loading}
         >
-          <Text style={styles.buttonText}>Confirm Booking</Text>
+          {loading ? (
+            <View style={styles.loader}>
+              <div className="loader-spinner" />
+            </View>
+          ) : (
+            <Text style={styles.buttonText}>Confirm Booking</Text>
+          )}
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </ScrollView>
   );
 }
@@ -195,8 +216,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1C1C1E',
   },
+  webScrollContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100vh',
+  },
   content: {
     padding: 20,
+  },
+  webContent: {
+    width: 400,
+    maxWidth: '90vw',
+    marginTop: 40,
+    marginBottom: 40,
+    borderRadius: 16,
+    backgroundColor: 'rgba(44,44,46,0.98)',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
   },
   title: {
     fontFamily: 'Poppins-Bold',
@@ -248,7 +283,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C2C2E',
     borderWidth: 1,
     borderColor: '#38383A',
-    padding: 15,
+    padding: Platform.OS === 'web' ? 8 : 15,
     borderRadius: 12,
     fontSize: 16,
     color: '#FFFFFF',
@@ -258,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C2C2E',
     borderWidth: 1,
     borderColor: '#38383A',
-    padding: 15,
+    padding: Platform.OS === 'web' ? 8 : 15,
     borderRadius: 12,
   },
   dateTimeButtonText: {
@@ -268,10 +303,12 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 18,
+    padding: Platform.OS === 'web' ? 10 : 18,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
+    width: Platform.OS === 'web' ? 200 : '100%',
+    alignSelf: Platform.OS === 'web' ? 'center' : 'auto',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -292,4 +329,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Poppins-Medium',
   },
-}); 
+  loader: {
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+// Add this to your CSS (e.g. in app/styles/datepicker.css or a new file):
+// .loader-spinner {
+//   border: 3px solid #f3f3f3;
+//   border-top: 3px solid #007AFF;
+//   border-radius: 50%;
+//   width: 18px;
+//   height: 18px;
+//   animation: spin 1s linear infinite;
+// }
+// @keyframes spin {
+//   0% { transform: rotate(0deg); }
+//   100% { transform: rotate(360deg); }
+// } 
