@@ -22,9 +22,25 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+const darkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: '#007AFF',
+    background: '#1C1C1E',
+    card: '#2C2C2E',
+    text: '#FFFFFF',
+    border: '#38383A',
+    notification: '#FF453A',
+  },
+};
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
+    'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
+    'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
     ...FontAwesome.font,
   });
 
@@ -44,46 +60,52 @@ export default function RootLayout() {
   }
 
   return (
-    <BookingProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#007AFF',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
-        <Stack.Screen
-          name="index"
-          options={{
-            title: 'Home',
+    <ThemeProvider value={darkTheme}>
+      <BookingProvider>
+        <Stack
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#2C2C2E',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 18,
+            },
+            contentStyle: {
+              backgroundColor: '#1C1C1E',
+            },
           }}
-        />
-        <Stack.Screen
-          name="booking"
-          options={{
-            title: 'Make a Booking',
-          }}
-        />
-        <Stack.Screen
-          name="confirmation"
-          options={{
-            title: 'Booking Confirmation',
-            headerBackTitle: 'Back',
-          }}
-        />
-        <Stack.Screen
-          name="view-bookings"
-          options={{
-            title: 'Your Bookings',
-            headerBackTitle: 'Back',
-          }}
-        />
-      </Stack>
-    </BookingProvider>
+        >
+          <Stack.Screen
+            name="index"
+            options={{
+              title: 'Home',
+            }}
+          />
+          <Stack.Screen
+            name="booking"
+            options={{
+              title: 'Make a Booking',
+            }}
+          />
+          <Stack.Screen
+            name="confirmation"
+            options={{
+              title: 'Booking Confirmation',
+              headerBackTitle: 'Back',
+            }}
+          />
+          <Stack.Screen
+            name="view-bookings"
+            options={{
+              title: 'Your Bookings',
+              headerBackTitle: 'Back',
+            }}
+          />
+        </Stack>
+      </BookingProvider>
+    </ThemeProvider>
   );
 }
 

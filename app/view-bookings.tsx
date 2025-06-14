@@ -3,11 +3,17 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { useRouter } from 'expo-router';
 import { useBooking } from '../context/BookingContext';
 
+interface Booking {
+  name: string;
+  date: string;
+  time: string;
+}
+
 export default function ViewBookingsScreen() {
   const router = useRouter();
   const { bookings } = useBooking();
 
-  const renderBookingItem = ({ item }) => (
+  const renderBookingItem = ({ item }: { item: Booking }) => (
     <View style={styles.bookingItem}>
       <Text style={styles.bookingName}>{item.name}</Text>
       <Text style={styles.bookingDateTime}>{item.date} at {item.time}</Text>
@@ -43,11 +49,12 @@ export default function ViewBookingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1C1C1E',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-Bold',
+    fontSize: 28,
+    color: '#FFFFFF',
     marginBottom: 20,
     textAlign: 'center',
     paddingTop: 20,
@@ -56,21 +63,31 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   bookingItem: {
-    backgroundColor: '#f8f8f8',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#2C2C2E',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#38383A',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   bookingName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 5,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginBottom: 8,
   },
   bookingDateTime: {
-    fontSize: 14,
-    color: '#666',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    color: '#8E8E93',
   },
   emptyContainer: {
     flex: 1,
@@ -79,20 +96,29 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#666',
+    fontFamily: 'Poppins-Medium',
+    fontSize: 18,
+    color: '#8E8E93',
     marginBottom: 20,
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 12,
     alignItems: 'center',
     width: '80%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Poppins-SemiBold',
   },
 }); 

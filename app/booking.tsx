@@ -4,6 +4,9 @@ import { useRouter } from 'expo-router';
 import { useBooking } from '../context/BookingContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatDate, formatTime } from '../utils/dateUtils';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import "./styles/datepicker.css";
 
 export default function BookingScreen() {
   const router = useRouter();
@@ -47,7 +50,19 @@ export default function BookingScreen() {
     }
   };
 
-  const renderBookingItem = ({ item }) => (
+  const handleDateChange = (newDate: Date | null) => {
+    if (newDate) {
+      setDate(newDate);
+    }
+  };
+
+  const handleTimeChange = (newTime: Date | null) => {
+    if (newTime) {
+      setTime(newTime);
+    }
+  };
+
+  const renderBookingItem = ({ item }: { item: any }) => (
     <View style={styles.bookingItem}>
       <Text style={styles.bookingName}>{item.name}</Text>
       <Text style={styles.bookingDateTime}>{item.date} at {item.time}</Text>
@@ -56,69 +71,111 @@ export default function BookingScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Make a Booking</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>Make a Booking</Text>
 
-      {bookings.length > 0 && (
-        <View style={styles.bookingsList}>
-          <Text style={styles.sectionTitle}>Existing Bookings</Text>
-          <FlatList
-            data={bookings}
-            renderItem={renderBookingItem}
-            keyExtractor={(item, index) => index.toString()}
-            scrollEnabled={false}
-          />
-        </View>
-      )}
-      
-      <View style={styles.formContainer}>
-        <Text style={styles.sectionTitle}>New Booking</Text>
+        {bookings.length > 0 && (
+          <View style={styles.bookingsList}>
+            <Text style={styles.sectionTitle}>Existing Bookings</Text>
+            <FlatList
+              data={bookings}
+              renderItem={renderBookingItem}
+              keyExtractor={(item, index) => index.toString()}
+              scrollEnabled={false}
+            />
+          </View>
+        )}
         
         {error ? <Text style={styles.error}>{error}</Text> : null}
         
-        <TextInput
-          style={styles.input}
-          placeholder="Your Name"
-          value={name}
-          onChangeText={(text) => {
-            setName(text);
-            setError('');
-          }}
-        />
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Your Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your name"
+            placeholderTextColor="#8E8E93"
+            value={name}
+            onChangeText={(text) => {
+              setName(text);
+              setError('');
+            }}
+          />
+        </View>
         
-        <TouchableOpacity 
-          style={styles.dateTimeButton}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.dateTimeButtonText}>
-            Date: {formatDate(date)}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Date</Text>
+          {Platform.OS === 'web' ? (
+            <DatePicker
+              selected={date}
+              onChange={handleDateChange}
+              minDate={new Date()}
+              dateFormat="yyyy-MM-dd"
+              wrapperClassName="datePicker"
+              className="datePickerInput"
+              popperClassName="datePickerPopper"
+              popperPlacement="bottom-start"
+            />
+          ) : (
+            <TouchableOpacity 
+              style={styles.dateTimeButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={styles.dateTimeButtonText}>
+                {formatDate(date)}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-        <TouchableOpacity 
-          style={styles.dateTimeButton}
-          onPress={() => setShowTimePicker(true)}
-        >
-          <Text style={styles.dateTimeButtonText}>
-            Time: {formatTime(time)}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Time</Text>
+          {Platform.OS === 'web' ? (
+            <DatePicker
+              selected={time}
+              onChange={handleTimeChange}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="h:mm aa"
+              placeholderText="Select a time"
+              wrapperClassName="datePicker"
+              className="datePickerInput"
+              popperClassName="datePickerPopper"
+              popperPlacement="bottom-start"
+              autoComplete="off"
+            />
+          ) : (
+            <TouchableOpacity 
+              style={styles.dateTimeButton}
+              onPress={() => setShowTimePicker(true)}
+            >
+              <Text style={styles.dateTimeButtonText}>
+                {formatTime(time)}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-        {(showDatePicker || Platform.OS === 'ios') && (
+        {/* Native pickers for iOS/Android */}
+        {Platform.OS !== 'web' && showDatePicker && (
           <DateTimePicker
             value={date}
             mode="date"
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={onDateChange}
             minimumDate={new Date()}
+            textColor="#FFFFFF"
           />
         )}
 
-        {(showTimePicker || Platform.OS === 'ios') && (
+        {Platform.OS !== 'web' && showTimePicker && (
           <DateTimePicker
             value={time}
             mode="time"
             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
             onChange={onTimeChange}
+            textColor="#FFFFFF"
           />
         )}
 
@@ -136,81 +193,103 @@ export default function BookingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1C1C1E',
+  },
+  content: {
+    padding: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    fontFamily: 'Poppins-Bold',
+    fontSize: 28,
+    color: '#FFFFFF',
+    marginBottom: 30,
     textAlign: 'center',
-    paddingTop: 20,
   },
   sectionTitle: {
+    fontFamily: 'Poppins-Medium',
     fontSize: 18,
-    fontWeight: '600',
+    color: '#FFFFFF',
     marginBottom: 15,
-    color: '#333',
   },
   bookingsList: {
     padding: 20,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#2C2C2E',
     marginBottom: 20,
   },
   bookingItem: {
-    backgroundColor: '#fff',
+    backgroundColor: '#38383A',
     padding: 15,
     borderRadius: 8,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#444',
   },
   bookingName: {
+    fontFamily: 'Poppins-Medium',
     fontSize: 16,
-    fontWeight: '600',
+    color: '#FFFFFF',
     marginBottom: 5,
   },
   bookingDateTime: {
+    fontFamily: 'Poppins-Regular',
     fontSize: 14,
-    color: '#666',
+    color: '#8E8E93',
   },
-  formContainer: {
-    padding: 20,
+  formGroup: {
+    marginBottom: 20,
+  },
+  label: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginBottom: 8,
   },
   input: {
+    backgroundColor: '#2C2C2E',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#38383A',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
+    borderRadius: 12,
     fontSize: 16,
+    color: '#FFFFFF',
+    fontFamily: 'Poppins-Regular',
   },
   dateTimeButton: {
+    backgroundColor: '#2C2C2E',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#38383A',
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    backgroundColor: '#f8f8f8',
+    borderRadius: 12,
   },
   dateTimeButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: '#FFFFFF',
+    fontFamily: 'Poppins-Regular',
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Poppins-SemiBold',
   },
   error: {
-    color: 'red',
-    marginBottom: 15,
+    color: '#FF453A',
+    marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'Poppins-Medium',
   },
 }); 
