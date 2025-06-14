@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import { BookingProvider } from '../context/BookingContext';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
@@ -42,7 +43,48 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <BookingProvider>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#007AFF',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: 'Home',
+          }}
+        />
+        <Stack.Screen
+          name="booking"
+          options={{
+            title: 'Make a Booking',
+          }}
+        />
+        <Stack.Screen
+          name="confirmation"
+          options={{
+            title: 'Booking Confirmation',
+            headerBackTitle: 'Back',
+          }}
+        />
+        <Stack.Screen
+          name="view-bookings"
+          options={{
+            title: 'Your Bookings',
+            headerBackTitle: 'Back',
+          }}
+        />
+      </Stack>
+    </BookingProvider>
+  );
 }
 
 function RootLayoutNav() {
