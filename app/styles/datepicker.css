@@ -1,0 +1,97 @@
+.datePickerInput {
+  background-color: #2C2C2E !important;
+  border: 1px solid #38383A !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  font-size: 16px !important;
+  color: #FFFFFF !important;
+  font-family: 'Poppins-Regular', sans-serif !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: 10px !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+.datePickerPopper, .react-datepicker-popper {
+  z-index: 9999 !important;
+  position: absolute !important;
+  background-color: #2C2C2E !important;
+  border: 1px solid #38383A !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-datepicker {
+  background-color: #2C2C2E !important;
+  border: 1px solid #38383A !important;
+  border-radius: 12px !important;
+  font-family: 'Poppins-Regular', sans-serif !important;
+}
+
+.react-datepicker__header {
+  background-color: #2C2C2E !important;
+  border-bottom: 1px solid #38383A !important;
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: #FFFFFF !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #38383A !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: #007AFF !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #007AFF !important;
+}
+
+.react-datepicker__time-container {
+  border-left: 1px solid #38383A !important;
+}
+
+.react-datepicker__time-box {
+  background-color: #2C2C2E !important;
+}
+
+.react-datepicker__time-list-item {
+  color: #FFFFFF !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: #38383A !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: #007AFF !important;
+}
+
+.react-datepicker__navigation {
+  border-color: #FFFFFF !important;
+}
+
+.react-datepicker__navigation:hover {
+  border-color: #007AFF !important;
+}
+
+.loader-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007AFF;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 
