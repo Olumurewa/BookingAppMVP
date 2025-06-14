@@ -14,7 +14,9 @@
   display: block !important;
 }
 
-.datePickerPopper {
+.datePickerPopper, .react-datepicker-popper {
+  z-index: 9999 !important;
+  position: absolute !important;
   background-color: #2C2C2E !important;
   border: 1px solid #38383A !important;
   border-radius: 12px !important;

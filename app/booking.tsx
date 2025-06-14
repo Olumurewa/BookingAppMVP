@@ -99,9 +99,13 @@ export default function BookingScreen() {
     // boxShadow is not supported in RN, so skip it
   } : undefined;
 
+  const formGroupWeb = Platform.OS === 'web' ? { marginBottom: 40 } : undefined;
+  const contentWeb = Platform.OS === 'web' ? { paddingBottom: 100 } : undefined;
+  const buttonWeb = Platform.OS === 'web' ? { marginTop: 32 } : undefined;
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={webScrollContent}>
-      <Animated.View style={[styles.content, webContent, { opacity: fadeAnim }]}>
+      <Animated.View style={[styles.content, webContent, contentWeb, { opacity: fadeAnim }]}>
         <Text style={styles.title}>Make a Booking</Text>
 
         {bookings.length > 0 && (
@@ -132,7 +136,7 @@ export default function BookingScreen() {
           />
         </View>
         
-        <View style={styles.formGroup}>
+        <View style={[styles.formGroup, formGroupWeb]}>
           <Text style={styles.label}>Date</Text>
           {Platform.OS === 'web' ? (
             <DatePicker
@@ -157,7 +161,7 @@ export default function BookingScreen() {
           )}
         </View>
 
-        <View style={styles.formGroup}>
+        <View style={[styles.formGroup, formGroupWeb]}>
           <Text style={styles.label}>Time</Text>
           {Platform.OS === 'web' ? (
             <DatePicker
@@ -210,7 +214,7 @@ export default function BookingScreen() {
         )}
 
         <TouchableOpacity 
-          style={styles.button}
+          style={[styles.button, buttonWeb]}
           onPress={handleBooking}
           disabled={loading}
         >
