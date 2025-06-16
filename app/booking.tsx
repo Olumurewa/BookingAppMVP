@@ -7,6 +7,7 @@ import { formatDate, formatTime } from '../utils/dateUtils';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import "./styles/datepicker.css";
+import { Picker } from '@react-native-picker/picker';
 
 export default function BookingScreen() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function BookingScreen() {
   const [name, setName] = useState('');
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [service, setService] = useState('Cleaning');
   const [error, setError] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -40,7 +42,8 @@ export default function BookingScreen() {
       const booking = {
         name,
         date: formatDate(date),
-        time: formatTime(time)
+        time: formatTime(time),
+        service: service,
       };
       addBooking(booking);
       router.push({
@@ -121,6 +124,47 @@ export default function BookingScreen() {
         )}
         
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Select a Service</Text>
+          {Platform.OS === 'web' ? (
+            <select
+              value={service}
+              onChange={(e) => setService(e.target.value)}
+              style={{
+                backgroundColor: '#2C2C2E',
+                borderWidth: 1,
+                borderColor: '#38383A',
+                padding: 8,
+                borderRadius: 12,
+                fontSize: 16,
+                color: '#FFFFFF',
+                fontFamily: 'Poppins-Regular',
+                width: '100%',
+                marginBottom: 10,
+              }}
+            >
+              <option value="Cleaning">Cleaning</option>
+              <option value="Washing">Washing</option>
+              <option value="Spa">Spa</option>
+              <option value="Car Wash">Car Wash</option>
+            </select>
+          ) : (
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={service}
+                onValueChange={(itemValue) => setService(itemValue as string)}
+                style={styles.picker}
+                itemStyle={styles.pickerItem}
+              >
+                <Picker.Item label="Cleaning" value="Cleaning" />
+                <Picker.Item label="Washing" value="Washing" />
+                <Picker.Item label="Spa" value="Spa" />
+                <Picker.Item label="Car Wash" value="Car Wash" />
+              </Picker>
+            </View>
+          )}
+        </View>
         
         <View style={styles.formGroup}>
           <Text style={styles.label}>Your Name</Text>
@@ -343,6 +387,26 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  pickerContainer: {
+    backgroundColor: '#2C2C2E',
+    borderWidth: 1,
+    borderColor: '#38383A',
+    borderRadius: 12,
+    marginBottom: 10,
+    overflow: 'hidden', // Ensures the border radius is applied correctly
+  },
+  picker: {
+    height: 50,
+    color: '#FFFFFF',
+    backgroundColor: 'transparent',
+    fontFamily: 'Poppins-Regular',
+    // On web, the default select styling takes over, these styles are mostly for mobile
+  },
+  pickerItem: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    color: '#FFFFFF',
   },
 });
 

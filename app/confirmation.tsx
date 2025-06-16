@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ConfirmationScreen() {
   const router = useRouter();
-  const { name, date, time } = useLocalSearchParams();
+  const { name, date, time, service } = useLocalSearchParams();
 
   return (
     <View style={styles.container}>
@@ -16,6 +16,11 @@ export default function ConfirmationScreen() {
         <Text style={styles.title}>Booking Confirmed!</Text>
         
         <View style={styles.detailsContainer}>
+          <View style={styles.detailItem}>
+            <Text style={styles.label}>Service</Text>
+            <Text style={styles.value}>{service}</Text>
+          </View>
+
           <View style={styles.detailItem}>
             <Text style={styles.label}>Name</Text>
             <Text style={styles.value}>{name}</Text>

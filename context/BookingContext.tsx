@@ -4,6 +4,7 @@ interface Booking {
   name: string;
   date: string;
   time: string;
+  service: string;
 }
 
 interface BookingContextType {
